@@ -4,6 +4,8 @@ import { UnistyleRegistry } from './UnistyleRegistry'
 import type { UnistylesBridge } from '../types'
 import { UnistylesError, isTest, isWeb } from '../common'
 import { UnistylesMockedBridge, UnistylesMockedRegistry, UnistylesMockedRuntime } from './mocks'
+import { Platform,TurboModuleRegistry,NativeModules,NativeEventEmitter } from 'react-native'
+import { UnistylesModule_h } from './UnistylesModuleHarmony'
 
 class Unistyles {
     private _runtime: UnistylesRuntime
@@ -19,17 +21,22 @@ class Unistyles {
             return
         }
 
-        const isInstalled = UnistylesModule?.install() ?? false
-
-        if (!isInstalled) {
-            throw new Error(UnistylesError.RuntimeUnavailable)
+        if(Platform.OS == 'harmony'){
+            this._bridge = UnistylesModule_h as UnistylesBridge
+            this._registry = new UnistyleRegistry(this._bridge)
+            this._runtime = new UnistylesRuntime(this._bridge, this._registry)
+        }else{
+            let isInstalled = UnistylesModule?.install() ?? false
+            if (!isInstalled) {
+                throw new Error(UnistylesError.RuntimeUnavailable)
+            }
+    
+            // @ts-ignore
+            // eslint-disable-next-line no-undef
+            this._bridge = (isWeb ? globalThis : global).__UNISTYLES__ as UnistylesBridge
+            this._registry = new UnistyleRegistry(this._bridge)
+            this._runtime = new UnistylesRuntime(this._bridge, this._registry)
         }
-
-        // @ts-ignore
-        // eslint-disable-next-line no-undef
-        this._bridge = (isWeb ? globalThis : global).__UNISTYLES__ as UnistylesBridge
-        this._registry = new UnistyleRegistry(this._bridge)
-        this._runtime = new UnistylesRuntime(this._bridge, this._registry)
     }
 
     public get registry() {
@@ -39,6 +46,6 @@ class Unistyles {
     public get runtime() {
         return this._runtime
     }
-}
 
+}
 export const unistyles = new Unistyles()

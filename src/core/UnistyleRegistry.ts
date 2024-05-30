@@ -78,7 +78,7 @@ export class UnistyleRegistry {
         if (this.unistylesBridge.themeName) {
             throw new Error(UnistylesError.ThemeNotFound)
         }
-
+        
         throw new Error(UnistylesError.ThemeNotSelected)
     }
 

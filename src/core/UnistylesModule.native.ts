@@ -1,4 +1,4 @@
-import { NativeModules } from 'react-native'
+import { NativeModules,Platform,TurboModuleRegistry } from 'react-native'
 
 type UnistylesNativeModule = {
     install(): boolean

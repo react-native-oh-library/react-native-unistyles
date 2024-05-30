@@ -1,0 +1,16 @@
+{
+  "string": [
+    {
+      "name": "module_desc",
+      "value": "module description"
+    },
+    {
+      "name": "UnistylesAbility_desc",
+      "value": "description"
+    },
+    {
+      "name": "UnistylesAbility_label",
+      "value": "label"
+    }
+  ]
+}
