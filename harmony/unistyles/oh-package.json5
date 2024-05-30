@@ -1,0 +1,11 @@
+{
+  "name": "@react-native-oh-tpl/react-native-unistyles",
+  "version": "2.7.2-0.0.1",
+  "description": "Level up your React Native StyleSheet",
+  "main": "",
+  "author": "",
+  "license": "",
+  "dependencies": {
+    "@rnoh/react-native-openharmony": "file:../react_native_openharmony",
+  }
+}

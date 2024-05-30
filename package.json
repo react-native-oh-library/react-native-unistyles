@@ -1,13 +1,13 @@
 {
-  "name": "react-native-unistyles",
-  "version": "2.7.2",
+  "name": "@react-native-oh-tpl/react-native-unistyles",
+  "version": "2.7.2-0.0.1",
   "description": "Level up your React Native StyleSheet",
   "scripts": {
     "test": "jest",
     "test:coverage": "jest --coverage",
     "tsc": "node_modules/typescript/bin/tsc --noEmit",
     "lint": "eslint . --ext .ts,.tsx",
-    "prepare": "husky install && bob build",
+    "prepare": "husky install",
     "precommit": "concurrently 'yarn tsc' 'yarn lint' 'yarn test'",
     "release": "release-it"
   },
@@ -22,7 +22,7 @@
     "ios",
     "android",
     "cxx",
-    "windows",
+    "windows","harmony",
     "react-native.config.js",
     "react-native-unistyles.podspec",
     "!lib/typescript/examples",
@@ -45,15 +45,23 @@
     "react-native-web",
     "react-native-tvos",
     "react-native-visionos",
-    "expo"
+    "expo","harmony"
   ],
-  "repository": "https://github.com/jpudysz/react-native-unistyles",
+  "harmony": {
+    "alias": "react-native-unistyles",
+      "codegenConfig": {
+      "specPaths": [
+        "./src"
+      ]
+    }
+  },
+  "repository": "https://github.com/react-native-oh-library/react-native-unistyles",
   "author": "Jacek Pudysz <jacekpudysz@gmail.com> (https://github.com/jpudysz)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/jpudysz/react-native-unistyles/issues"
+    "url": "https://github.com/react-native-oh-library/react-native-unistyles/issues"
   },
-  "homepage": "https://github.com/jpudysz/react-native-unistyles#readme",
+  "homepage": "https://github.com/react-native-oh-library/react-native-unistyles#readme",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },

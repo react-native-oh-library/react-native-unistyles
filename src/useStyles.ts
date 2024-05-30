@@ -28,7 +28,7 @@ export const useStyles = <ST extends StyleSheetWithSuperPowers>(
     const parsedStyles = useMemo(() => typeof stylesheet === 'function'
         ? stylesheet(theme, unistyles.runtime)
         : stylesheet, [theme, stylesheet, layout])
-
+    
     const dynamicStyleSheet = useMemo(() => Object
         .entries(parsedStyles || {})
         .reduce((acc, [key, value]) => {
