@@ -108,6 +108,9 @@
     "react-native-web": "*",
     "react-native-windows": "*"
   },
+  "Dependencies": {
+    "react-native-unistyles": "2.7.2"
+  },
   "peerDependenciesMeta": {
     "react-native-macos": {
       "optional": true
