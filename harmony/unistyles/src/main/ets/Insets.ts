@@ -4,9 +4,9 @@ import { SafeAreaInsets } from '@rnoh/react-native-openharmony/ts';
 export class UnistylesInsets {
   insets :Insets;
 
-  constructor(context: common.UIAbilityContext,insets: SafeAreaInsets) {
+  constructor(context: common.UIAbilityContext,insets: SafeAreaInsets,scale:number) {
     this.insets = new Insets(insets.top,insets.bottom,insets.left,insets.right);
-    this.density = context.config.screenDensity;
+    this.density = scale;
   }
 
   private density: number;

@@ -2,12 +2,8 @@
   "module": {
     "name": "unistyles",
     "type": "har",
-    "description": "$string:module_desc",
-    "deviceTypes": [
-      "default",
-      "tablet",
-      "2in1"
-    ],
+    "description": "Level up your React Native StyleSheet",
+    "deviceTypes": [ "default" ],
     "requestPermissions":[
 
     ]

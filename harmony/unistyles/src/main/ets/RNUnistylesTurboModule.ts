@@ -1,22 +1,21 @@
 import { TurboModule,TurboModuleContext } from '@rnoh/react-native-openharmony/ts';
-import { TM } from '@rnoh/react-native-openharmony/generated/ts'
 import window from '@ohos.window';
 import common from '@ohos.app.ability.common'
-import { Insets, } from './Insets';
 import { BusinessError } from '@ohos.base';
 import {Platform} from './Platform'
-import {Dimensions} from './Config'
+import { UnistylesConfig} from './Config'
 import mediaquery from '@ohos.mediaquery';
-import { RNUnistylesEvents,RNUnistylesEventType } from './RNEventType';
 import Logger from './Logger';
 import type EnvironmentCallback from '@ohos.app.ability.EnvironmentCallback';
 import ConfigurationConstant from '@ohos.app.ability.ConfigurationConstant';
 
-export class RNUnistylesTurboModule extends TurboModule implements TM.Unistyles.Spec {
+export class RNUnistylesTurboModule extends TurboModule {
   context: common.UIAbilityContext;
   ctx :TurboModuleContext;
   isCxxReady: Boolean = false;
   platform: Platform = null;
+  //横屏数据
+  direction:string = 'vertical';
 
   constructor(ctx) {
     super(ctx);
@@ -25,37 +24,54 @@ export class RNUnistylesTurboModule extends TurboModule implements TM.Unistyles.
     this.onRNUnistylesEvent();
   }
 
-  //横屏数据
-  direction = 'horizontal';
-  install(): any {
-    this.platform = new Platform(this.context,this.ctx)
-
-    let a = {"screen":this.platform.getLayoutConfig().screen,
-      "colorScheme":this.platform.getConfig().colorScheme,
-      "contentSizeCategory":this.platform.getConfig().contentSizeCategory,
-      "insets":this.platform.getLayoutConfig().insets,
-      "statusBar":this.platform.getLayoutConfig().statusBar,
-      "navigationBar":this.platform.getLayoutConfig().navigationBar
+  install(): object {
+    let data;
+    try {
+      this.platform = new Platform(this.ctx.uiAbilityContext,this.ctx);
+      if(this.platform.getLayoutConfig().screen.width >this.platform.getLayoutConfig().screen.height)
+        this.direction = 'landscape';
+      data = {
+        "status":true,
+        "screen":this.platform.getLayoutConfig().screen,
+        "colorScheme":this.platform.getConfig().colorScheme,
+        "contentSizeCategory":this.platform.getConfig().contentSizeCategory,
+        "insets":this.platform.getLayoutConfig().insets,
+        "statusBar":this.platform.getLayoutConfig().statusBar,
+        "navigationBar":this.platform.getLayoutConfig().navigationBar
+      }
+      Logger.info(' Installed Unistyles \uD83E\uDD84!')
+      this.isCxxReady = true;
+    } catch (e) {
+      this.isCxxReady = false;
+      data = {"status":false}
     }
-    this.context.cacheDir
-    return a;
+
+    return data;
   }
 
+  time;
   private onRNUnistylesEvent(){
-    //属性变更事件监听
-    this.ctx.rnInstance.subscribeToLifecycleEvents("WINDOW_SIZE_CHANGE",() => {
-      let displayMetrics = this.ctx.getDisplayMetrics();
-      this.ctx.rnInstance.emitDeviceEvent("didUpdateDimensions", displayMetrics);
-      let a = {'type':'screenChange',"payload" :{ "width" : displayMetrics.windowPhysicalPixels.width,"height" : displayMetrics.windowPhysicalPixels.height } }
-      this.ctx.rnInstance.emitDeviceEvent('___unistylesOnChange',a);
-    })
-
+    //colorMode change
     let envCallback: EnvironmentCallback = {
       onConfigurationUpdated: (config) => {
-        const colorMode = config.colorMode;
-        this.platform.getConfig().colorScheme = this.colorModeToJSColorScheme(colorMode);
-        let a = {'type':'colorSchemeChange',"payload" :{ "colorScheme" : this.platform.getConfig().colorScheme } }
-        this.ctx.rnInstance.emitDeviceEvent('___unistylesOnChange',a);
+        if (this.isCxxReady)
+          return;
+
+        if(this.time){
+          clearInterval(this.time);
+        }
+        this.time = setInterval(()=>{
+          const colorMode = this.colorModeToJSColorScheme(config.colorMode);
+          if(this.platform.getConfig().colorScheme != colorMode){
+            this.platform.getConfig().colorScheme = colorMode;
+            this.ctx.rnInstance.postMessageToCpp("Unistyles::nativeOnAppearanceChange", [this.platform.getConfig().colorScheme]);
+          }
+          const fontscale = UnistylesConfig.getContentSizeCategory((config.fontSizeScale));
+          if(this.platform.getConfig().contentSizeCategory != fontscale){
+            this.platform.getConfig().contentSizeCategory == fontscale;
+            this.ctx.rnInstance.postMessageToCpp("Unistyles::nativeOnContentSizeCategoryChange", [this.platform.getConfig().contentSizeCategory]);
+          }
+        },10);
       },
       onMemoryLevel: () => {
         //we need this empty callback, otherwise it won't compile
@@ -64,9 +80,11 @@ export class RNUnistylesTurboModule extends TurboModule implements TM.Unistyles.
     const applicationContext = this.ctx.uiAbilityContext.getApplicationContext();
     applicationContext.on('environment', envCallback);
 
-    //横屏变更
+    //orientation change
     let listener: mediaquery.MediaQueryListener = mediaquery.matchMediaSync('(orientation: landscape)')
     listener.on('change',(data:mediaquery.MediaQueryResult) => {
+      if (this.isCxxReady)
+        return;
       if (data.matches as boolean) {
         this.direction = 'landscape';
       } else {
@@ -79,38 +97,14 @@ export class RNUnistylesTurboModule extends TurboModule implements TM.Unistyles.
       }else {
         //更新宽高和inset
         if(this.platform.hasNewLayoutConfig()){
-          let a = {'type':'orientationChange',
-            "payload" :{ "screen" : this.platform.getLayoutConfig().screen,
-            "insets":this.platform.getLayoutConfig().insets} }
-          this.ctx.rnInstance.emitDeviceEvent('___unistylesOnChange',a);
+          this.ctx.rnInstance.postMessageToCpp("Unistyles::nativeOnOrientationChange",
+                                              {screenDimensions:this.platform.getLayoutConfig().screen,
+                                                statusBarDimensions:this.platform.getLayoutConfig().statusBar,
+                                                screenInsets:this.platform.getLayoutConfig().insets,
+                                                navigationBarDimensions:this.platform.getLayoutConfig().navigationBar});
         }
       }
     })
-  }
-
-  layoutChange(breakpoint: UnistylesBreakpoints, orientation: String, screen: Dimensions, statusBar: Dimensions, insets: Insets, navigationBar: Dimensions) {
-    let a = {'type':'layout',
-      'payload':
-      {
-        'breakpoint':breakpoint,
-        'orientation':orientation,
-        'screen' :{'width':screen.width,'height':screen.height } ,
-        'statusBar' :{'width':statusBar.width,'height':statusBar.height },
-        'navigationBar' :{'width':navigationBar.width,'height':navigationBar.height },
-        'insets':{ 'top':insets.top,'bottom':insets.bottom,'left':insets.left,'right':insets.right }
-      }
-    }
-    this.ctx.rnInstance.emitDeviceEvent('__unistylesOnChange',a);
-  }
-
-  themeChange(themeName: String) {
-    let a = {'type':'theme', 'payload': { 'themeName':themeName } }
-    this.ctx.rnInstance.emitDeviceEvent('__unistylesOnChange',a);
-  }
-
-  pluginChange() {
-    let a = {'type':'plugin' }
-    this.ctx.rnInstance.emitDeviceEvent('__unistylesOnChange',a);
   }
 
   ContentSizeCategoryChange(contentSizeCategory: String) {

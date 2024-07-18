@@ -1,11 +1,9 @@
 import { UnistylesModule } from './UnistylesModule'
-import { UnistylesRuntime } from './UnistylesRuntime'
-import { UnistyleRegistry } from './UnistyleRegistry'
-import type { UnistylesBridge } from '../types'
-import { UnistylesError, isTest, isWeb } from '../common'
-import { UnistylesMockedBridge, UnistylesMockedRegistry, UnistylesMockedRuntime } from './mocks'
-import { Platform,TurboModuleRegistry,NativeModules,NativeEventEmitter } from 'react-native'
-import { UnistylesModule_h } from './UnistylesModuleHarmony'
+import { UnistylesRuntime } from 'react-native-unistyles'
+import { UnistyleRegistry } from 'react-native-unistyles'
+import type { UnistylesBridge } from 'react-native-unistyles'
+import { UnistylesError, isTest, isWeb } from 'react-native-unistyles'
+import { UnistylesMockedBridge, UnistylesMockedRegistry, UnistylesMockedRuntime } from 'react-native-unistyles'
 
 class Unistyles {
     private _runtime: UnistylesRuntime
@@ -21,22 +19,16 @@ class Unistyles {
             return
         }
 
-        if(Platform.OS == 'harmony'){
-            this._bridge = UnistylesModule_h as UnistylesBridge
-            this._registry = new UnistyleRegistry(this._bridge)
-            this._runtime = new UnistylesRuntime(this._bridge, this._registry)
-        }else{
-            let isInstalled = UnistylesModule?.install() ?? false
-            if (!isInstalled) {
-                throw new Error(UnistylesError.RuntimeUnavailable)
-            }
-    
-            // @ts-ignore
-            // eslint-disable-next-line no-undef
-            this._bridge = (isWeb ? globalThis : global).__UNISTYLES__ as UnistylesBridge
-            this._registry = new UnistyleRegistry(this._bridge)
-            this._runtime = new UnistylesRuntime(this._bridge, this._registry)
+        let isInstalled = UnistylesModule?.install() ?? false
+        if (!isInstalled) {
+            throw new Error(UnistylesError.RuntimeUnavailable)
         }
+
+        // @ts-ignore
+        // eslint-disable-next-line no-undef
+        this._bridge = (isWeb ? globalThis : global).__UNISTYLES__ as UnistylesBridge
+        this._registry = new UnistyleRegistry(this._bridge)
+        this._runtime = new UnistylesRuntime(this._bridge, this._registry)
     }
 
     public get registry() {

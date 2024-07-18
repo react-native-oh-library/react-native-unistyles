@@ -48,12 +48,7 @@
     "expo","harmony"
   ],
   "harmony": {
-    "alias": "react-native-unistyles",
-      "codegenConfig": {
-      "specPaths": [
-        "./src"
-      ]
-    }
+    "alias": "react-native-unistyles"
   },
   "repository": "https://github.com/react-native-oh-library/react-native-unistyles",
   "author": "Jacek Pudysz <jacekpudysz@gmail.com> (https://github.com/jpudysz)",
@@ -64,6 +59,9 @@
   "homepage": "https://github.com/react-native-oh-library/react-native-unistyles#readme",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
+  },
+  "dependencies": {
+    "react-native-unistyles": "2.7.2"
   },
   "devDependencies": {
     "@commitlint/config-conventional": "18.4.3",
@@ -107,9 +105,6 @@
     "react-native-macos": "*",
     "react-native-web": "*",
     "react-native-windows": "*"
-  },
-  "Dependencies": {
-    "react-native-unistyles": "2.7.2"
   },
   "peerDependenciesMeta": {
     "react-native-macos": {
