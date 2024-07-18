@@ -1,6 +1,6 @@
-import { RNPackage, TurboModulesFactory } from '@rnoh/react-native-openharmony/ts';
+import { RNPackage, TurboModulesFactory, DescriptorWrapperFactoryByDescriptorType, DescriptorWrapperFactoryByDescriptorTypeCtx } from '@rnoh/react-native-openharmony/ts';
 import type { TurboModule, TurboModuleContext } from '@rnoh/react-native-openharmony/ts';
-import { TM } from '@rnoh/react-native-openharmony/generated/ts'
+import { RNC,TM } from '@rnoh/react-native-openharmony/generated/ts'
 import { RNUnistylesTurboModule } from './RNUnistylesTurboModule';
 
 class RNUnistylesTurboModuleFactory extends TurboModulesFactory {
@@ -12,12 +12,15 @@ class RNUnistylesTurboModuleFactory extends TurboModulesFactory {
   }
 
   hasTurboModule(name: string): boolean {
-    return name === TM.Unistyles.NAME;
+    return name === "Unistyles";
   }
 }
 
 export class RNUnistylesPackage extends RNPackage {
   createTurboModulesFactory(ctx: TurboModuleContext): TurboModulesFactory {
     return new RNUnistylesTurboModuleFactory(ctx);
+  }
+  createDescriptorWrapperFactoryByDescriptorType(ctx: DescriptorWrapperFactoryByDescriptorTypeCtx): DescriptorWrapperFactoryByDescriptorType {
+    return { [RNC.GeneratedSampleViewArkTS.NAME]: (ctx2) => new RNC.GeneratedSampleViewArkTS.DescriptorWrapper(ctx2.descriptor) }
   }
 }

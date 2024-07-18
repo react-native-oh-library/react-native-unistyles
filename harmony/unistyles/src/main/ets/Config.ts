@@ -2,21 +2,23 @@ import common from '@ohos.app.ability.common';
 import { UnistylesInsets,Insets } from './Insets';
 import { ConfigurationConstant } from '@kit.AbilityKit';
 import display from '@ohos.display';
-import { TurboModuleContext } from '@rnoh/react-native-openharmony/ts';
+import { DisplayMetrics, PhysicalPixels, TurboModuleContext } from '@rnoh/react-native-openharmony/ts';
 
 
 export class UnistylesConfig{
   private context: common.UIAbilityContext
   private ctx :TurboModuleContext
   constructor(context: common.UIAbilityContext,ctx :TurboModuleContext) {
-    this.context =context;
-    this.ctx =ctx;
+    this.context = context;
+    this.ctx = ctx;
+    this.windowPhysicalPixels = this.ctx.getDisplayMetrics().windowPhysicalPixels;
 
-    this.insets = new UnistylesInsets(this.context,ctx.safeAreaInsetsProvider.safeAreaInsets);
+    this.insets = new UnistylesInsets(this.context,ctx.safeAreaInsetsProvider.safeAreaInsets,this.windowPhysicalPixels.scale);
     this.lastLayoutConfig = this.getAppLayoutConfig();
     this.lastConfig = this.getAppConfig()
   }
 
+  private windowPhysicalPixels: PhysicalPixels;
   private insets: UnistylesInsets;
   private lastConfig: Config;
   private lastLayoutConfig: LayoutConfig;
@@ -56,14 +58,13 @@ export class UnistylesConfig{
   private getAppConfig(): Config {
     return new Config(
       this.getColorScheme(),
-      this.getContentSizeCategory(display.getDefaultDisplaySync().scaledDensity)
+      UnistylesConfig.getContentSizeCategory(display.getDefaultDisplaySync().scaledDensity)
     )
   }
 
   private getAppLayoutConfig() {
-    let a = this.ctx.getDisplayMetrics();
-    let screenWidth = (a.screenPhysicalPixels.width/a.screenPhysicalPixels.scale )
-    let screenHeight = (a.screenPhysicalPixels.height/a.screenPhysicalPixels.scale )
+    let screenWidth = (this.windowPhysicalPixels.width/this.windowPhysicalPixels.scale )
+    let screenHeight = (this.windowPhysicalPixels.height/this.windowPhysicalPixels.scale )
 
     return new LayoutConfig(
       new Dimensions(screenWidth, screenHeight),
@@ -73,22 +74,34 @@ export class UnistylesConfig{
     )
   }
 
-  private getContentSizeCategory(fontScale: number): string {
+  public static getContentSizeCategory(fontScale: number): string {
     let contentSizeCategory:string;
-    if(fontScale <= 0.85){
+    if(fontScale <= 0){
+      contentSizeCategory = "Unspecified";
+    }else if(fontScale <= 1){
+      contentSizeCategory = "ExtraSmall";
+    }else if(fontScale <= 2){
       contentSizeCategory = "Small";
-    }else if(fontScale <= 1.0){
-      contentSizeCategory = "Default";
-    }else if(fontScale <= 1.15){
+    }else if(fontScale <= 3){
+      contentSizeCategory = "Medium";
+    }else if(fontScale <= 4){
       contentSizeCategory = "Large";
-    }else if(fontScale <= 1.3){
+    }else if(fontScale <= 5){
       contentSizeCategory = "ExtraLarge";
-    }else if(fontScale <= 1.5){
-      contentSizeCategory = "Huge";
-    }else if(fontScale <= 1.8){
-      contentSizeCategory = "ExtraHuge";
-    }else{
-      contentSizeCategory = "ExtraExtraHuge";
+    }else if(fontScale <= 6){
+      contentSizeCategory = "ExtraExtraLarge";
+    }else if(fontScale <= 7){
+      contentSizeCategory = "ExtraExtraExtraLarge";
+    }else if(fontScale <= 8){
+      contentSizeCategory = "AccessibilityMedium";
+    }else if(fontScale <= 9){
+      contentSizeCategory = "AccessibilityLarge";
+    }else if(fontScale <= 0){
+      contentSizeCategory = "AccessibilityExtraLarge";
+    }else if(fontScale <= 11){
+      contentSizeCategory = "AccessibilityExtraExtraLarge";
+    }else {
+      contentSizeCategory = "AccessibilityExtraExtraExtraLarge";
     }
 
     return contentSizeCategory

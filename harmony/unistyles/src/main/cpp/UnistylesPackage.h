@@ -1,7 +1,7 @@
-/**
+/*
  * MIT License
  *
- * Copyright (C) 2024 Huawei Device Co., Ltd.
+ * Copyright (C) Huawei Technologies Co.,Ltd. 2024. All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,44 +21,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+#ifndef WORKLETSPACKAGE_H
+#define WORKLETSPACKAGE_H
 
-import hilog from '@ohos.hilog';
+#include "RNOH/Package.h"
+#include "Unistyles.h"
 
-class Logger {
-  private domain: number;
-  private prefix: string;
-  private format: string = '%{public}s, %{public}s';
-  private isDebug: boolean;
+using namespace rnoh;
+using namespace facebook;
 
-  /**
-   * constructor.
-   *
-   * @param Prefix Identifies the log tag.
-   * @param domain Domain Indicates the service domain, which is a hexadecimal integer ranging from 0x0 to 0xFFFFF.
-   */
-  constructor(prefix: string = 'RNCToolbarAndroid', domain: number = 0xFF00, isDebug = false) {
-    this.prefix = prefix;
-    this.domain = domain;
-    this.isDebug = isDebug;
-  }
-
-  debug(...args: string[]): void {
-    if (this.isDebug) {
-      hilog.debug(this.domain, this.prefix, this.format, args);
+class UnistylesTurboModuleFactoryDelegate : public TurboModuleFactoryDelegate {
+public:
+    SharedTurboModule createTurboModule(Context ctx, const std::string &name) const override 
+    {
+        if (name == "Unistyles") {
+            return std::make_shared<Unistyles>(ctx, name);
+        }
+        return nullptr;
     }
-  }
+};
 
-  info(...args: string[]): void {
-    hilog.info(this.domain, this.prefix, this.format, args);
-  }
-
-  warn(...args: string[]): void {
-    hilog.warn(this.domain, this.prefix, this.format, args);
-  }
-
-  error(...args: string[]): void {
-    hilog.error(this.domain, this.prefix, this.format, args);
-  }
-}
-
-export default new Logger('RNUnistyles', 0xFF00, false)
+namespace rnoh {
+    class UnistylesPackage : public Package {
+    public:
+        UnistylesPackage(Package::Context ctx) : Package(ctx) {}
+        std::unique_ptr<TurboModuleFactoryDelegate> createTurboModuleFactoryDelegate() 
+        {
+            return std::make_unique<UnistylesTurboModuleFactoryDelegate>();
+        }
+      std::vector<ArkTSMessageHandler::Shared> createArkTSMessageHandlers() override;
+    };
+} // namespace rnoh
+#endif
