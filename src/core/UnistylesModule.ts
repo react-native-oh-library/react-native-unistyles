@@ -1,8 +1,8 @@
 import { NativeEventEmitter, NativeModules } from 'react-native'
 import type { UnistylesThemes, UnistylesBreakpoints } from 'react-native-unistyles'
-import type { ColorSchemeName, ScreenInsets, StatusBar, NavigationBar } from 'react-native-unistyles'
-import { normalizeWebStylesPlugin } from 'react-native-unistyles'
-import { isServer } from 'react-native-unistyles'
+import type { ColorSchemeName, ScreenInsets, StatusBar, NavigationBar } from '../types'
+import { normalizeWebStylesPlugin } from '../plugins'
+import { isServer } from '../common'
 
 export class UnistylesBridgeWeb {
     #timerRef?: ReturnType<typeof setTimeout> = undefined

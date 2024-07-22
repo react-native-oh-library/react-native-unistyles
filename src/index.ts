@@ -1,11 +1,11 @@
 import { unistyles } from './core'
-import { mq } from 'react-native-unistyles'
-import { useInitialTheme } from 'react-native-unistyles'
-import type { UnistylesPlugin, UnistylesValues } from 'react-native-unistyles'
-import type { UnistylesThemes, UnistylesBreakpoints } from 'react-native-unistyles'
-import { ScreenOrientation, AndroidContentSizeCategory, IOSContentSizeCategory } from 'react-native-unistyles'
-import { useStyles } from 'react-native-unistyles'
-import { createStyleSheet } from 'react-native-unistyles'
+import { mq } from './utils'
+import { useInitialTheme } from './hooks'
+import type { UnistylesPlugin, UnistylesValues } from './types'
+import type { UnistylesThemes, UnistylesBreakpoints } from './global'
+import { ScreenOrientation, AndroidContentSizeCategory, IOSContentSizeCategory } from './common'
+import { useStyles } from './useStyles'
+import { createStyleSheet } from './createStyleSheet'
 
 /**
  * Utility to interact with the Unistyles
