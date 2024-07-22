@@ -1,6 +1,6 @@
 {
   "name": "@react-native-oh-tpl/react-native-unistyles",
-  "version": "2.7.2-0.0.1",
+  "version": "2.7.2-0.0.2",
   "description": "Level up your React Native StyleSheet",
   "scripts": {
     "test": "jest",
