@@ -1,9 +1,9 @@
 import { UnistylesModule } from './UnistylesModule'
-import { UnistylesRuntime } from 'react-native-unistyles'
-import { UnistyleRegistry } from 'react-native-unistyles'
-import type { UnistylesBridge } from 'react-native-unistyles'
-import { UnistylesError, isTest, isWeb } from 'react-native-unistyles'
-import { UnistylesMockedBridge, UnistylesMockedRegistry, UnistylesMockedRuntime } from 'react-native-unistyles'
+import { UnistylesRuntime } from './UnistylesRuntime'
+import { UnistyleRegistry } from './UnistyleRegistry'
+import type { UnistylesBridge } from '../types'
+import { UnistylesError, isTest, isWeb } from '../common'
+import { UnistylesMockedBridge, UnistylesMockedRegistry, UnistylesMockedRuntime } from './mocks'
 
 class Unistyles {
     private _runtime: UnistylesRuntime
@@ -19,7 +19,8 @@ class Unistyles {
             return
         }
 
-        let isInstalled = UnistylesModule?.install() ?? false
+        const isInstalled = UnistylesModule?.install() ?? false
+
         if (!isInstalled) {
             throw new Error(UnistylesError.RuntimeUnavailable)
         }
@@ -38,6 +39,6 @@ class Unistyles {
     public get runtime() {
         return this._runtime
     }
-
 }
+
 export const unistyles = new Unistyles()
