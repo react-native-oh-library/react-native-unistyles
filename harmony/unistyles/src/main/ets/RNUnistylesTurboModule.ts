@@ -66,9 +66,9 @@ export class RNUnistylesTurboModule extends TurboModule {
             this.platform.getConfig().colorScheme = colorMode;
             this.ctx.rnInstance.postMessageToCpp("Unistyles::nativeOnAppearanceChange", [this.platform.getConfig().colorScheme]);
           }
-          const fontscale = UnistylesConfig.getContentSizeCategory((config.fontSizeScale));
-          if(this.platform.getConfig().contentSizeCategory != fontscale){
-            this.platform.getConfig().contentSizeCategory == fontscale;
+          const fontScale = UnistylesConfig.getContentSizeCategory((config.fontSizeScale));
+          if(this.platform.getConfig().contentSizeCategory != fontScale){
+            this.platform.getConfig().contentSizeCategory == fontScale;
             this.ctx.rnInstance.postMessageToCpp("Unistyles::nativeOnContentSizeCategoryChange", [this.platform.getConfig().contentSizeCategory]);
           }
         },10);
