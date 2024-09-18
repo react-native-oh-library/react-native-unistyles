@@ -12,7 +12,7 @@ namespace rnoh {
 
     static react::TurboModule* unistylesModule = nullptr;
 
-    jsi::Value install(facebook::jsi::Runtime &rt, react::TurboModule &turboModule, const facebook::jsi::Value *args,
+    jsi::Value hostFunction_RNCUnistylesTurboModule_install(facebook::jsi::Runtime &rt, react::TurboModule &turboModule, const facebook::jsi::Value *args,
                        size_t count) 
     {
         auto self = static_cast<Unistyles *>(&turboModule);
@@ -26,7 +26,7 @@ namespace rnoh {
         : ArkTSTurboModule(ctx, name) 
     {
         methodMap_ = {
-        {"install", {0, rnoh::install}}};
+        {"install", {0, rnoh::hostFunction_RNCUnistylesTurboModule_install}}};
     }
 
     bool Unistyles::install(facebook::jsi::Runtime &rt) 
