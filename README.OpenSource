@@ -1,0 +1,11 @@
+[
+    {
+        "Name": "react-native-unistyles",
+        "License": "MIT License",
+        "License File": "https://github.com/jpudysz/react-native-unistyles/blob/main/LICENSE",
+        "Version Number": "2.7.2",
+        "Owner" : "xiafeng@huawei.com",
+        "Upstream URL": "https://github.com/jpudysz/react-native-unistyles",
+        "Description": "Level up your React Native StyleSheet"
+    }
+]
