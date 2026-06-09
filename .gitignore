@@ -82,3 +82,5 @@ lib/
 docs/.yarn
 coverage
 docs/dist
+harmony/unistyles/oh_modules/
+harmony/unistyles/build/
