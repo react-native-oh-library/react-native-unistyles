@@ -1,4 +1,4 @@
-# @react-native-oh-tpl/react-native-unistyles
+# @react-native-ohos/react-native-unistyles
 
 This project is based on [react-native-unistyles](https://github.com/jpudysz/react-native-unistyles)
 
